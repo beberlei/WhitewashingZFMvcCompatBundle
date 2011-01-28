@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://www.symfony-project.org/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.symfony-project.org/schema/dic/services http://www.symfony-project.org/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="whitewashing.zend.mvc1compat.view_base_paths" type="collection" />
+    </parameters>
+
+    <services>
+        <service id="whitewashing.zend.mvc1compat.core.view.listener" class="Whitewashing\Zend\Mvc1CompatBundle\View\CoreViewListener">
+            <tag name="kernel.listener" event="core.view" method="filterResponse" />
+            <argument>%whitewashing.zend.mvc1compat.view_base_paths%</argument>
+            <argument id="router" type="service" />
+        </service>
+        
+    </services>
+</container>

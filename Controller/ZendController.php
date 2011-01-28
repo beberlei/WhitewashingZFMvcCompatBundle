@@ -13,17 +13,36 @@
 
 namespace Whitewashing\Zend\Mvc1CompatBundle\Controller;
 
-class ZendController
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
+abstract class ZendController implements ContainerAwareInterface
 {
+    protected $container;
     protected $tools;
     protected $_request;
     protected $_response;
 
-    public function __construct(MvcTools $tools)
+    /**
+     * The symfony request object.
+     *
+     * @var Request
+     */
+    private $request;
+
+    /**
+     * @var Zend_View_Interface
+     */
+    public $view;
+
+    public function setContainer(ContainerInterface $container = null)
     {
-        $this->tools = $tools;
-        $this->_request = new ZendRequest($tools->request);
+        $this->container = $container;
+        $this->request = $container->get('request');
+        $this->request->attributes->set('zend_compat_controller', $this);
+        $this->_request = new ZendRequest($this->request);
         $this->_response = new ZendResponse();
+        $this->view = new \Zend_View();
 
         $this->init();
         $this->preDispatch();
@@ -95,13 +114,13 @@ class ZendController
     final protected function _forward($action, $controller = null, $module = null, array $params = null)
     {
         if (!$controller) {
-            list($bundle, $controller) = explode(":", $this->tools->request->attributes->get('_controller'));
+            list($bundle, $controller) = explode(":", $this->request->attributes->get('_controller'));
         } else if (!$module) {
-            list($bundle, $devnull) = explode(":", $this->tools->request->attributes->get('_controller'));
+            list($bundle, $devnull) = explode(":", $this->request->attributes->get('_controller'));
         }
 
         $controller = $module.":".$controller.":".$action;
-        return $this->tools->container->get('http_kernel')->forward($controller, array(), $params);
+        return $this->container->get('http_kernel')->forward($controller, array(), $params);
     }
 
     /**
