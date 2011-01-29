@@ -11,19 +11,12 @@
  * to kontakt@beberlei.de so I can send you a copy immediately.
  */
 
-namespace Whitewashing\Zend\Mvc1CompatBundle;
+namespace Whitewashing\Zend\Mvc1CompatBundle\Controller\Helpers;
 
-use Symfony\Component\HttpKernel\Bundle\Bundle;
-
-class WhitewashingZendMvc1CompatBundle extends Bundle
+class ContextSwitch extends Helper
 {
-    public function getNamespace()
+    public function getName()
     {
-        return __NAMESPACE__;
-    }
 
-    public function getPath()
-    {
-        return strtr(__DIR__, '\\', '/');
     }
 }

@@ -19,28 +19,45 @@ use Symfony\Component\Routing\RouterInterface;
 class UrlHelper extends Helper
 {
     /**
-     * @var Symfony\Component\Routing\RouterInterface
+     * @var Symfony\Component\Routing\Router
      */
     private $router;
-    private $request;
+    private $routeNameParser;
+    private $httpKernel;
 
-    public function __construct(RouterInterface $router, Request $request)
+    public function __construct(RouterInterface $router, $routeNameParser, $kernel)
     {
         $this->router = $router;
-        $this->request = $request;
+        $this->routeNameParser = $routeNameParser;
+        $this->httpKernel = $kernel;
     }
 
-    public function simple($action, $controller = null, $module = null, array $params = null)
+    public function simple($action, $controller = null, $module = null, array $params = array())
     {
+        $zendRequest = $this->getActionController()->getRequest();
         if (!$controller) {
-            list($bundle, $controller) = explode(":", $this->request->attributes->get('_controller'));
-        } else if (!$module) {
-            list($bundle, $devnull) = explode(":", $this->request->attributes->get('_controller'));
+            $controller = $zendRequest->getControllerName();
+        }
+        if (!$module) {
+            $module = $zendRequest->getModuleName();
         }
 
-        $this->router->
+        /*$routes = $this->router->getRouteCollection()->all();
+        foreach ($routes AS $route) {
+            $details = $this->routeNameParser->parse($route->getDefault('_controller'));
+        }*/
 
-        $controller = $module.":".$controller.":".$action;
-        return $this->tools->container->get('http_kernel')->forward($controller, array(), $params);
+        $controller = sprintf('%sBundle:%s:%s',$module, $controller, $action);
+        return $this->httpKernel->forward($controller, array(), $params);
+    }
+
+    public function getName()
+    {
+        return 'url';
+    }
+
+    public function direct($action, $controller = null, $module = null, array $params = array())
+    {
+        return $this->simple($action, $controller, $module, $params);
     }
 }

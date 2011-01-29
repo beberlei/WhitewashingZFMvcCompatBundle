@@ -27,14 +27,6 @@ class Mvc1CompatExtension extends Extension
     {
         $loader = new XmlFileLoader($container, __DIR__.'/../Resources/config');
         $loader->load('compat.xml');
-
-        $viewBasePaths = array();
-        foreach ($configs AS $config) {
-            if (isset($config['view_base_paths'])) {
-                $viewBasePaths = array_merge($viewBasePaths, $config['view_base_paths']);
-            }
-        }
-        $container->setParameter('whitewashing.zend.mvc1compat.view_base_paths', $viewBasePaths);
     }
 
     public function getAlias()

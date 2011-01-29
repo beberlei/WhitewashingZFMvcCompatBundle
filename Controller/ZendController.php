@@ -15,11 +15,12 @@ namespace Whitewashing\Zend\Mvc1CompatBundle\Controller;
 
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Whitewashing\Zend\Mvc1CompatBundle\View\ParameterBag;
+use Whitewashing\Zend\Mvc1CompatBundle\Controller\Helpers\HelperBroker;
 
 abstract class ZendController implements ContainerAwareInterface
 {
     protected $container;
-    protected $tools;
     protected $_request;
     protected $_response;
 
@@ -31,18 +32,24 @@ abstract class ZendController implements ContainerAwareInterface
     private $request;
 
     /**
-     * @var Zend_View_Interface
+     * @var ParameterBag
      */
     public $view;
+
+    /**
+     * @var HelperBroker
+     */
+    protected $_helper;
 
     public function setContainer(ContainerInterface $container = null)
     {
         $this->container = $container;
         $this->request = $container->get('request');
         $this->request->attributes->set('zend_compat_controller', $this);
-        $this->_request = new ZendRequest($this->request);
+        $this->_request = $this->container->get('whitewashing.zend.mvc1compat.controller.request');
         $this->_response = new ZendResponse();
-        $this->view = new \Zend_View();
+        $this->view = new ParameterBag();
+        $this->_helper = new HelperBroker($this->container, $this);
 
         $this->init();
         $this->preDispatch();
@@ -54,14 +61,18 @@ abstract class ZendController implements ContainerAwareInterface
 
     public function postDispatch() {}
 
+    /**
+     * @param  string $name
+     * @return Helper
+     */
     public function getHelper($name)
     {
-        
+        return $this->_helper->getHelper($name);
     }
 
-    protected function _getParam($name, $default)
+    protected function _getParam($name, $default = null)
     {
-        $value = $this->_request->getParam($paramName);
+        $value = $this->_request->getParam($name);
         if ((null === $value || '' === $value) && (null !== $default)) {
             $value = $default;
         }
@@ -83,6 +94,22 @@ abstract class ZendController implements ContainerAwareInterface
     protected function _getAllParams()
     {
         return $this->_request->getParams();
+    }
+
+    /**
+     * @return ZendRequest
+     */
+    public function getRequest()
+    {
+        return $this->_request;
+    }
+
+    /**
+     * @return ZendResponse
+     */
+    public function getResponse()
+    {
+        return $this->_response;
     }
 
     /**

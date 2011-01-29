@@ -33,24 +33,45 @@ class ZendRequest
      */
     protected $params = array();
 
+    /**
+     * @var RouteNameParser
+     */
+    private $parser;
 
-    public function __construct(Request $request)
+    private $actionName;
+    private $controllerName;
+    private $moduleName;
+
+    public function __construct(Request $request, RouteNameParser $parser)
     {
         $this->request = $request;
+        $this->parser = $parser;
+    }
+
+    private function parseRequest()
+    {
+        if ($this->actionName) {
+            return;
+        }
+
+        $details = $this->parser->parse($this->request->attributes->get('_controller'));
+        $this->actionName = $details['action'];
+        $this->controllerName = $details['controller'];
+        $this->moduleName = $details['module'];
     }
 
     public function __get($name)
     {
-        if (isset($this->request->attributes[$name])) {
-            return $this->request->attributes[$name];
-        } else if (isset($this->request->query[$name])) {
-            return $this->request->query[$name];
-        } else if (isset($this->request->request[$name])) {
-            return $this->request->request[$name];
-        } else if (isset($this->request->cookies[$name])) {
-            return $this->request->cookies[$name];
-        } else if (isset($this->request->server[$name])) {
-            return $this->request->server[$name];
+        if ($this->request->attributes->has($name)) {
+            return $this->request->attributes->get($name);
+        } else if ($this->request->query->has($name)) {
+            return $this->request->query->get($name);
+        } else if ($this->request->request->has($name)) {
+            return $this->request->request->get($name);
+        } else if ($this->request->cookies->has($name)) {
+            return $this->request->cookies->get($name);
+        } else if ($this->request->server->has($name)) {
+            return $this->request->server->get($name);
         } else {
             return null;
         }
@@ -168,7 +189,7 @@ class ZendRequest
      */
     public function setParamSources(array $paramSources = array())
     {
-        $this->_paramSources = $paramSources;
+        $this->paramSources = $paramSources;
         return $this;
     }
 
@@ -179,7 +200,7 @@ class ZendRequest
      */
     public function getParamSources()
     {
-        return $this->_paramSources;
+        return $this->paramSources;
     }
 
     public function getParam($key, $default = null)
@@ -187,10 +208,10 @@ class ZendRequest
         $paramSources = $this->getParamSources();
         if (isset($this->_params[$key])) {
             return $this->_params[$key];
-        } elseif (in_array('_GET', $paramSources) && (isset($this->request->query[$key]))) {
-            return $this->request->query[$key];
-        } elseif (in_array('_POST', $paramSources) && (isset($this->request->request[$key]))) {
-            return $this->request->request[$key];
+        } elseif (in_array('_GET', $paramSources) && $this->request->query->has($key)) {
+            return $this->request->query->get($key);
+        } elseif (in_array('_POST', $paramSources) && $this->request->request->has($key)) {
+            return $this->request->request->get($key);
         }
 
         return $default;
@@ -296,17 +317,20 @@ class ZendRequest
 
     public function getModuleName()
     {
-        throw new \RuntimeException("how do i get the bundle?");
+        $this->parseRequest();
+        return $this->moduleName;
     }
 
     public function getControllerName()
     {
-        return $this->request->attributes->get('_controller');
+        $this->parseRequest();
+        return $this->controllerName;
     }
 
     public function getActionName()
     {
-        return $this->request->attributes->get('_action');
+        $this->parseRequest();
+        return $this->actionName;
     }
 
     public function getUserParams()

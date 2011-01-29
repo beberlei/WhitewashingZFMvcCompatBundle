@@ -14,6 +14,12 @@
 
 namespace Whitewashing\Zend\Mvc1CompatBundle\View;
 
+use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
+use Symfony\Bundle\FrameworkBundle\Templating\Loader\TemplateLocatorInterface;
+use Symfony\Component\Templating\TemplateNameParserInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Response;
+
 /**
  * Symfony Templating Engine that makes Zend View behave like the Symfony Templating layer
  *
@@ -26,54 +32,103 @@ namespace Whitewashing\Zend\Mvc1CompatBundle\View;
  * All the template names passed in are already sticked toegether by the CoreViewListener which
  * has access to the controller helpers for example the ContextHelper.
  */
-class ZendViewEngine implements \Symfony\Bundle\FrameworkBundle\Templating\EngineInterface
+class ZendViewEngine implements EngineInterface
 {
+    /**
+     * @var TemplateLocatorInterface
+     */
+    private $locator;
+
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
+
+    /**
+     * @var TemplateNameParserInterface
+     */
+    private $parser;
+
     /**
      * @var Zend_View_Interface
      */
     private $view;
 
-    public function setView($view)
-    {
-        $this->view = $view;
-    }
+    /**
+     * @var array
+     */
+    private $cache = array();
 
-    private function parseTemplate($name)
+    
+    public function __construct(TemplateLocatorInterface $locator, ContainerInterface $container, TemplateNameParserInterface $parser)
     {
-        list($bundle, $controller, $action) = explode(":", $name);
-        list($action, $format, $ext) = explode(".", $action);
-
-        return array(
-            'bundle' => $bundle,
-            'controller' => $controller,
-            'action' => $action,
-            'format' => $format,
-            'ext' => $ext,
-        );
+        $this->locator = $locator;
+        $this->container = $container;
+        $this->parser = $parser;
+        $this->view = new \Zend_View();
+        // Zend View is not able to handle absolute paths except with this little trick
+        $this->view->setScriptPath('');
     }
 
     public function exists($name)
     {
-        $template = $this->parseTemplate($name);
+        return (file_exists($this->findTemplate($name)));
     }
 
     public function load($name)
     {
-        
+        return $this->findTemplate($name);
     }
 
     public function render($name, array $parameters = array())
     {
-
+        $templateName = $this->load($name);
+        $this->view->clearVars();
+        $this->view->assign($parameters);
+        return $this->view->render($templateName);
     }
 
+    /**
+     * Renders a view and returns a Response.
+     *
+     * @param string   $view       The view name
+     * @param array    $parameters An array of parameters to pass to the view
+     * @param Response $response   A Response instance
+     *
+     * @return Response A Response instance
+     */
     public function renderResponse($view, array $parameters = array(), Response $response = null)
     {
-        
+        if (null === $response) {
+            $response = $this->container->get('response');
+        }
+
+        $response->setContent($this->render($view, $parameters));
+
+        return $response;
     }
 
     public function supports($name)
     {
+        $template = $this->parser->parse($name);
+        return 'phtml' === $template['engine'];
+    }
 
+    protected function findTemplate($name)
+    {
+        if (!is_array($name)) {
+            $name = $this->parser->parse($name);
+        }
+
+        $key = md5(serialize($name));
+        if (isset($this->cache[$key])) {
+            return $this->cache[$key];
+        }
+
+        if (false == $file = $this->locator->locate($name)) {
+            throw new \RuntimeException(sprintf('Unable to find template "%s".', json_ecnode($name)));
+        }
+
+        return $this->cache[$key] = $file;
     }
 }

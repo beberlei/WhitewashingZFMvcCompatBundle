@@ -1,6 +1,6 @@
 <?php
 /**
- * Whitewashing ZendMvc1CompatBundle
+ * Whitewashing Zendmvc1compat
  *
  * LICENSE
  *
@@ -16,7 +16,7 @@ namespace Whitewashing\Zend\Mvc1CompatBundle\Controller\Helpers;
 use Symfony\Component\DependencyInjection\Container;
 use Whitewashing\Zend\Mvc1CompatBundle\Controller\ZendController;
 
-class ZendActionHelper
+class HelperBroker
 {
     private $helpers = array();
 
@@ -25,10 +25,11 @@ class ZendActionHelper
         // TODO: Convert to using tags!
         // TODO: Remember helpers should be scope=request
         $helpers = array(
-            'whitewashing.zend.mvc1compatbundle.actionhelper.redirector',
-            'whitewashing.zend.mvc1compatbundle.actionhelper.url',
-            'whitewashing.zend.mvc1compatbundle.actionhelper.json',
-            'whitewashing.zend.mvc1compatbundle.actionhelper.flashmessenger',
+            //'whitewashing.zend.mvc1compat.actionhelper.redirector',
+            'whitewashing.zend.mvc1compat.actionhelper.url',
+            //'whitewashing.zend.mvc1compat.actionhelper.json',
+            //'whitewashing.zend.mvc1compat.actionhelper.flashmessenger',
+            'whitewashing.zend.mvc1compat.actionhelper.contextswitch',
         );
         foreach ($helpers AS $helper) {
             $helper = $container->get($helper);

@@ -14,20 +14,25 @@
 namespace Whitewashing\Zend\Mvc1CompatBundle\View;
 
 use Symfony\Component\EventDispatcher\Event;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Whitewashing\Zend\Mvc1CompatBundle\Controller\ZendController;
 
 class CoreViewListener
 {
-    private $viewBasePaths = array();
     /**
-     * @var \Symfony\Component\Routing\Router
+     * @var Symfony\Bundle\FrameworkBundle\Templating\EngineInterface
      */
-    private $router;
+    private $templating;
 
-    public function __construct($viewBasePaths, $router)
+    /**
+     * @var Symfony\Component\HttpKernel\KernelInterface
+     */
+    private $kernel;
+
+    public function __construct($templating, KernelInterface $kernel)
     {
-        $this->viewBasePaths = $viewBasePaths;
-        $this->router = $router;
+        $this->templating = $templating;
+        $this->kernel = $kernel;
     }
 
     public function filterResponse(Event $event, $response)
@@ -35,10 +40,30 @@ class CoreViewListener
         /* @var $request \Symfony\Component\HttpFoundation\Request */
         $request = $event->get('request');
         if ($request->attributes->has('zend_compat_controller')) {
-            /* @var $controller ZendController */
-            $controller = $request->attributes->get('zend_compat_controller');
-            $controllerName = $request->attributes->get('_controller');
-            $controller->view->addBasePath();
+            /* @var $zendController ZendController */
+            $zendController = $request->attributes->get('zend_compat_controller');
+            /* @var $zendRequest ZendRequest */
+            $zendRequest = $zendController->getRequest();
+
+            if (!$response) {
+                /* @var $response Symfony\Component\HttpFoundation\Response */
+                $response = $this->kernel->getContainer()->get('response');
+            }
+
+            /* @var $zendResponse ZendResponse */
+            $zendResponse = $zendController->getResponse();
+            $response->headers->add($zendResponse->getHeaders());
+            $response->setStatusCode($zendResponse->getHttpResponseCode());
+
+            // TODO: "html" => ContextSwitch
+            $viewName = sprintf("%sBundle:%s:%s.%s.%s",
+                $zendRequest->getModuleName(),
+                $zendRequest->getControllerName(),
+                $zendRequest->getActionName(),
+                "html", "phtml"
+            );
+            $this->templating->renderResponse($viewName, $zendController->view->allVars(), $response);
         }
+        return $response;
     }
 }
