@@ -31,23 +31,23 @@ Simplifies moving your Zend 1.x MVC apps to Symfony 2 if you follow the way I in
 
 1. Add the bundle to your AppKernel::registerBundles() method:
 
-    return array(
-        //..
-        new Whitewashing\Zend\Mvc1CompatBundle\WhitewashingZendMvc1CompatBundle(),
-    );
+        return array(
+            //..
+            new Whitewashing\Zend\Mvc1CompatBundle\WhitewashingZendMvc1CompatBundle(),
+        );
 
 2. Add the Whitewashing namespace to your autolod.php.
 
 3. Register Zend_View as template engine in your config.yml:
 
-    app.config:
-        templating:
-            engine: ["phtml"]
+        app.config:
+            templating:
+                engine: ["phtml"]
 
 4. Enable the Compat Bundle in config.yml:
 
-    zendmvc1.compat:
-        default_layout_resource: "MyBundle::layout.html.phtml"
+        zendmvc1.compat:
+            default_layout_resource: "MyBundle::layout.html.phtml"
 
 ## Usage
 
@@ -61,12 +61,12 @@ and redirector helper calls. If you do want to use a another bundle name then ma
 2. Move all controllers into the $BundleRoot."/Controller/" directory and namespace the classes according to PSR-0. src/Appliction/BlogBundle/Controller/PostController.php
 should become:
 
-    namespace Application\BlogBundle\Controller;
-    use Whitewashing\Zend\Mvc1CompatBundle\Controller\ZendController;
+        namespace Application\BlogBundle\Controller;
+        use Whitewashing\Zend\Mvc1CompatBundle\Controller\ZendController;
 
-    class PostController extends ZendController
-    {
-    }
+        class PostController extends ZendController
+        {
+        }
 
 3. Move all your views into $BundleRoot."/Resources/views" and rename the "default" context html views into "viewName.html.phtml" instead of "viewName.phtml"
 
@@ -78,7 +78,7 @@ Different layout blocks are NOT supported. Use `$this->action()` for that.
 
 5. View Layer: Replace the scriptname in calls to $this->partial() and $this->partialLoop() with the symfony resources, for example:
 
-    <?php echo $this->partial("HelloBundle:Test:partial.html.phtml", array("name" => "Someone else!")); ?>
+        <?php echo $this->partial("HelloBundle:Test:partial.html.phtml", array("name" => "Someone else!")); ?>
 
 6. Routing
 
@@ -86,12 +86,12 @@ You have to convert all your Zend routes to Symfony routes, place them in a $Bun
 them in your app/config/routing.yml. Additionally Symfony has no "catch-all" routes by default, so you have to make use
 of the catch all mechanism defined by the compat bundle:
 
-    zendmvc1.compat:
-        catchall_bundles: ["BlogBundle"]
+        zendmvc1.compat:
+            catchall_bundles: ["BlogBundle"]
 
 When this mechanism is enabled you can request:
 
-    http://appuri/{module}/{controller}/{action}
+        http://appuri/{module}/{controller}/{action}
 
 7. Security and ACLs
 
@@ -132,13 +132,13 @@ need through the DIC.
 The HelperBroker in this compatibility layer only implements the necessary ZF functionality.
 You cannot extend it with your own helpers. Use the Dependency Injenction container in the Controller and request services to use:
 
-class MyController extends ZendController
-{
-    public function indexAction()
+    class MyController extends ZendController
     {
-        $this->get('my.action.helper')->doAction();
+        public function indexAction()
+        {
+            $this->get('my.action.helper')->doAction();
+        }
     }
-}
 
 If someone cares please implement the helper broker as extensionable object, its
 in `Whitewashing\Zend\Mvc1CompatBundle\Controller\Helpers\HelperBroker`. It should
