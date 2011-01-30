@@ -5,8 +5,8 @@ Simplifies moving your Zend 1.x MVC apps to Symfony 2 if you follow the way I in
 ## What it can do:
 
 * Has a base controller that mimics Zend_Controller_Action functionality
-* Uses Zend_View as template engine and just replaces certain view helpers
-* Ports some action helpers or implements proxies that implement Symfony2 functionality.
+* Uses Zend_View as template engine and just replaces certain view helpers with the Symfony2 functionality.
+* Ports most of the common action helpers or implements proxies that implement Symfony2 functionality.
 
 ## What it cannot do (yet! (Waiting for your pull requests))
 
@@ -16,6 +16,51 @@ Simplifies moving your Zend 1.x MVC apps to Symfony 2 if you follow the way I in
 ## What it will never do
 
 * Make Zend Application code reusable (Use the dependency injection container)
+* Handle calls to Zend_Controller_FrontController, you have to get rid of them.
+* Make the ActionStack Helper work. This concept is flawed and should be replaced with calls to $this->action() in the view, which replaces it with Symfony internal functionality that is super fast.
+
+## Installation
+
+1. Add the bundle to your AppKernel::registerBundles() method:
+
+    return array(
+        //..
+        new Whitewashing\Zend\Mvc1CompatBundle\WhitewashingZendMvc1CompatBundle(),
+    );
+
+2. Add the Whitewashing namespace to your autolod.php.
+
+3. Register Zend_View as template engine in your config.yml:
+
+    app.config:
+        templating:
+            engine: ["phtml"]
+
+4. Enable the Compat Bundle in config.yml:
+
+    zendmvc1.compat:
+        default_layout_resource: "MyBundle::layout.html.phtml"
+
+## Usage
+
+It should be obvious that you won't be able to port your Zend Framework app to Symfony2 just by installing this bundle, manual labour will be necessary.
+Each Zend Framework module will need to be ported to a Symfony2 Bundle.
+
+1. Create a bundle for your module. The Bundle Name should be "ModuleName" + "Bundle". So in the case of a "blog" module you need to call your Bundle class "BlogBundle".
+This can easily create clashes if you want to use a blog bundle built for Symfony in the future, but using this semantics you don't need to fix all your "_redirect", "_forward"
+and redirector helper calls. If you do want to use a another bundle name then make sure that whenever you specify $module in the Zend API you need that to be $module . "Bundle".
+
+2. Move all controllers into the $BundleRoot."/Controller/" directory and namespace the classes according to PR-0. src/Appliction/BlogBundle/Controller/PostController.php
+should become:
+
+    namespace Application\BlogBundle\Controller;
+    class PostController
+    {
+    }
+
+3. Move all your views into $BundleRoot."/Resources/views" and rename the "default" context html views into "viewName.html.phtml" instead of "viewName.phtml"
+
+4. Move your layout into $BundleRoot."/Resources/views/layout.html.phtml"
 
 ## Semantic differences
 
@@ -71,3 +116,18 @@ and the regular action helper stuff.
 * $this->getHelper('url')->url($urlOptions, $name) will not allow to include 'controller', 'module' or 'action' parameters in $urlOptions as the original Zend router allows.
 * $this->_helper->url($action, $ctrl, $module, $params) is an expensive method, iterating over the collection of all routes.
 * The third parameter of the UrlHelper#url method is now $absolute = true/false, the original third and fourth parameter $reset/$encode have been dropped.
+
+#### Zend Layout
+
+Parts of the API of `Zend_Layout` and the respective action helper has been ported, though it changed semantically.
+
+In your config.yml when defining the `zendmvc1.compat:` section you have to specify a "default_layout_resource" parameter,
+that takes of the form "BundleName::layoutFile.phtml" and resides in Bundle/Resources/views/layoutFile.phtml respectively.
+The following very common API calls work:
+
+    $this->_helper->layout()->disableLayout();
+    $this->_helper->layout()->enableLayout();
+    $this->_helper->layout()->setLayout("HelloBundle::layout.phtml", $enable)
+
+As you can see, `setLayout` also expects a bundle resource, not a path anymore. You have to change all occurances
+throughout your code, but I doubt that will be many.

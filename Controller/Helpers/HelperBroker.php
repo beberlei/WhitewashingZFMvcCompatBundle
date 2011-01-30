@@ -28,6 +28,8 @@ class HelperBroker
             'whitewashing.zend.mvc1compat.actionhelper.redirector',
             'whitewashing.zend.mvc1compat.actionhelper.url',
             'whitewashing.zend.mvc1compat.actionhelper.contextswitch',
+            'whitewashing.zend.mvc1compat.actionhelper.layout',
+            'whitewashing.zend.mvc1compat.actionhelper.viewrenderer',
             //'whitewashing.zend.mvc1compat.actionhelper.json',
             //'whitewashing.zend.mvc1compat.actionhelper.flashmessenger',
         );

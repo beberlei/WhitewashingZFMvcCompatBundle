@@ -44,5 +44,13 @@
             <argument type="service" id="whitewashing.zend.mvc1compat.actionhelper.url" />
             <argument type="service" id="response" strict="false" />
         </service>
+
+        <service id="whitewashing.zend.mvc1compat.actionhelper.layout" class="Whitewashing\Zend\Mvc1CompatBundle\Controller\Helpers\Layout" scope="request">
+            <argument>%whitewashing.zend.mvc1compat.default_layout_resource%</argument>
+        </service>
+
+        <service id="whitewashing.zend.mvc1compat.actionhelper.viewrenderer" class="Whitewashing\Zend\Mvc1CompatBundle\Controller\Helpers\ViewRenderer" scope="request">
+            <argument>%whitewashing.zend.mvc1compat.default_layout_resource%</argument>
+        </service>
     </services>
 </container>

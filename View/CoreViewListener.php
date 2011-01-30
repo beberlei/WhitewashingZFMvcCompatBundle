@@ -42,6 +42,8 @@ class CoreViewListener
         if ($request->attributes->has('zend_compat_controller') && !$response) {
             /* @var $zendController ZendController */
             $zendController = $request->attributes->get('zend_compat_controller');
+            $zendController->postDispatch();
+            
             /* @var $zendRequest ZendRequest */
             $zendRequest = $zendController->getRequest();
 
@@ -53,15 +55,21 @@ class CoreViewListener
             $response->headers->add($zendResponse->getHeaders());
             $response->setStatusCode($zendResponse->getHttpResponseCode());
 
-            // TODO: "html" => ContextSwitch
-            $viewName = sprintf("%sBundle:%s:%s.%s.%s",
-                $zendRequest->getModuleName(),
-                $zendRequest->getControllerName(),
-                $zendRequest->getActionName(),
-                "html", "phtml"
-            );
-            $pageView = $this->templating->render($viewName, $zendController->view->allVars());
-            $response->setContent($pageView);
+            if ($zendController->getHelper('viewrenderer')->getNoRender() === false) {
+                // TODO: "html" => ContextSwitch
+                $viewName = sprintf("%sBundle:%s:%s.%s.%s",
+                    $zendRequest->getModuleName(),
+                    $zendRequest->getControllerName(),
+                    $zendRequest->getActionName(),
+                    "html", "phtml"
+                );
+                $content = $this->templating->render($viewName, $zendController->view->allVars());
+
+                if ($zendController->getHelper('layout')->isEnabled()) {
+                    $content = $this->templating->render($zendController->getHelper('layout')->getLayout(), array('content' => $content));
+                }
+                $response->setContent($content);
+            }
         }
         return $response;
     }
