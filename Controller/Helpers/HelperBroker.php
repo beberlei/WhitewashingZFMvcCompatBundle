@@ -30,8 +30,6 @@ class HelperBroker
             'whitewashing.zend.mvc1compat.actionhelper.contextswitch',
             'whitewashing.zend.mvc1compat.actionhelper.layout',
             'whitewashing.zend.mvc1compat.actionhelper.viewrenderer',
-            //'whitewashing.zend.mvc1compat.actionhelper.json',
-            //'whitewashing.zend.mvc1compat.actionhelper.flashmessenger',
         );
         foreach ($helpers AS $helper) {
             $helper = $container->get($helper);

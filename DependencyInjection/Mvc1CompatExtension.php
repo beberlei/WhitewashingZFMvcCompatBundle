@@ -27,6 +27,21 @@ class Mvc1CompatExtension extends Extension
     {
         $loader = new XmlFileLoader($container, __DIR__.'/../Resources/config');
         $loader->load('compat.xml');
+
+        foreach ($configs AS $config) {
+            if (isset($config['default_layout_resource'])) {
+                $container->setParameter(
+                    'whitewashing.zend.mvc1compat.default_layout_resource',
+                    $config['default_layout_resource']
+                );
+            }
+            if (isset($config['catchall_bundles'])) {
+                $container->setParameter(
+                    'whitewashing.zend.mvc1compat.catchall_bundles',
+                    $config['catchall_bundles']
+                );
+            }
+        }
     }
 
     public function getAlias()

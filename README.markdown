@@ -2,18 +2,24 @@
 
 Simplifies moving your Zend 1.x MVC apps to Symfony 2 if you follow the way I interpreted the Zend project guidelines closely enough :-)
 
-## What it can do:
+## Overview
+
+### What it can do:
 
 * Has a base controller that mimics Zend_Controller_Action functionality
 * Uses Zend_View as template engine and just replaces certain view helpers with the Symfony2 functionality.
 * Ports most of the common action helpers or implements proxies that implement Symfony2 functionality.
 
-## What it cannot do (yet! (Waiting for your pull requests))
+### What it cannot do (yet! (Waiting for your pull requests))
 
-* Re-implement the Controller Plugin cycle
+* Support for custom Zend_View helpers (high priority)
+* Expose Symfony View Globals such as the User through Zend_View
+* Re-implement the Controller Plugin cycle, use Symfony internals to port your plugins.
 * Convert ZF routing config arrays to symfony2 ones
+* All the inflection madness with dashes, lowercase, uppercase whatnot routing to controller/action naming.
+* Context handling: The ContextSwitch and AjaxContext helpers are not ported yet.
 
-## What it will never do
+### What it will never do
 
 * Make Zend Application code reusable (Use the dependency injection container)
 * Handle calls to Zend_Controller_FrontController, you have to get rid of them.
@@ -66,6 +72,24 @@ should become:
 
     <?php echo $this->partial("HelloBundle:Test:partial.html.phtml", array("name" => "Someone else!")); ?>
 
+6. Routing
+
+You have to convert all your hand-crated routes to Symfony routes, place them in a $BundleRoot."/Resources/routing.yml" and import
+them in your app/config/routing.yml. Additionally Symfony has no "catch-all" routes by default, so you have to make use
+of the catch all mechanism defined by the compat bundle:
+
+    zendmvc1.compat:
+        catchall_bundles: ["BlogBundle"]
+
+When this mechanism is enabled you can request:
+
+    http://appuri/{module}/{controller}/{action}
+
+7. Security and ACLs
+
+You probably implemented some kind of authentication, security and acl mechanism using controller plugins, Zend_Acl and
+Zend_Auth. Ditch that code and use the SecurityBundle for this.
+
 ## Semantic differences
 
 ### FrontController
@@ -115,6 +139,11 @@ and the regular action helper stuff.
 
 ### List of ported Action Helpers
 
+* Url
+* Redirector
+* ViewRenderer
+* Layout
+
 #### Url Action Helper
 
 * $this->getHelper('url')->url($urlOptions, $name) will not allow to include 'controller', 'module' or 'action' parameters in $urlOptions as the original Zend router allows.
@@ -135,3 +164,7 @@ The following very common API calls work:
 
 As you can see, `setLayout` also expects a bundle resource, not a path anymore. You have to change all occurances
 throughout your code, but I doubt that will be many.
+
+#### View Renderer
+
+Only the functions setNoRender() and setNeverRender() have been ported.

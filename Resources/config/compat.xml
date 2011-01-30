@@ -6,6 +6,7 @@
     <parameters>
         <parameter key="templating.engine.zend.class">Whitewashing\Zend\Mvc1CompatBundle\View\ZendViewEngine</parameter>
         <parameter key="whitewashing.zend.mvc1compat.default_layout_resource">WhitewashingZendMvc1CompatBundle::layout.html.phtml</parameter>
+        <parameter key="whitewashing.zend.mvc1compat.catchall_bundles" type="collection" />
     </parameters>
 
     <services>
@@ -13,6 +14,12 @@
             <tag name="kernel.listener" event="core.view" method="filterResponse" />
             <argument id="templating" type="service" />
             <argument id="kernel" type="service" />
+        </service>
+
+        <service id="whitewashing.zend.mvc1compat.core.request.listener" class="Whitewashing\Zend\Mvc1CompatBundle\Controller\CatchAllRequestListener">
+            <tag name="kernel.listener" event="core.request" method="resolve" />
+            <argument type="service" id="whitewashing.zend.mvc1compat.nameparser" />
+            <argument>%whitewashing.zend.mvc1compat.catchall_bundles%</argument>
         </service>
 
         <service id="templating.engine.phtml" class="%templating.engine.zend.class%" public="false">
