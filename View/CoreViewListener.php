@@ -39,16 +39,14 @@ class CoreViewListener
     {
         /* @var $request \Symfony\Component\HttpFoundation\Request */
         $request = $event->get('request');
-        if ($request->attributes->has('zend_compat_controller')) {
+        if ($request->attributes->has('zend_compat_controller') && !$response) {
             /* @var $zendController ZendController */
             $zendController = $request->attributes->get('zend_compat_controller');
             /* @var $zendRequest ZendRequest */
             $zendRequest = $zendController->getRequest();
 
-            if (!$response) {
-                /* @var $response Symfony\Component\HttpFoundation\Response */
-                $response = $this->kernel->getContainer()->get('response');
-            }
+            /* @var $response Symfony\Component\HttpFoundation\Response */
+            $response = $this->kernel->getContainer()->get('response');
 
             /* @var $zendResponse ZendResponse */
             $zendResponse = $zendController->getResponse();
@@ -62,7 +60,8 @@ class CoreViewListener
                 $zendRequest->getActionName(),
                 "html", "phtml"
             );
-            $this->templating->renderResponse($viewName, $zendController->view->allVars(), $response);
+            $pageView = $this->templating->render($viewName, $zendController->view->allVars());
+            $response->setContent($pageView);
         }
         return $response;
     }

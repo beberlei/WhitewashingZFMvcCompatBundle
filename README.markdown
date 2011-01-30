@@ -44,11 +44,12 @@ need through the DIC.
 ### Zend_Controller_Action
 
 * IMPORTANT: Make sure $this->_redirect and $this->_forward are always called with a leading "return" statement.
+* $this->view only calls to a ParameterBag that temporarily holds all view parameters. Calling view helpers inside the controller won't work!
 
 ### Zend_Controller_Action_HelperBroker
 
-There is no equivalent like this one, you cannot add your own helpers.
-Use the Dependency Injenction container in the Controller and request services to use:
+The HelperBroker in this compatibility layer only implements the necessary ZF functionality.
+You cannot extend it with your own helpers. Use the Dependency Injenction container in the Controller and request services to use:
 
 class MyController extends ZendController
 {
@@ -65,4 +66,8 @@ and the regular action helper stuff.
 
 ### List of ported Action Helpers
 
-none yet
+#### Url Action Helper
+
+* $this->getHelper('url')->url($urlOptions, $name) will not allow to include 'controller', 'module' or 'action' parameters in $urlOptions as the original Zend router allows.
+* $this->_helper->url($action, $ctrl, $module, $params) is an expensive method, iterating over the collection of all routes.
+* The third parameter of the UrlHelper#url method is now $absolute = true/false, the original third and fourth parameter $reset/$encode have been dropped.

@@ -141,12 +141,14 @@ abstract class ZendController implements ContainerAwareInterface
     final protected function _forward($action, $controller = null, $module = null, array $params = null)
     {
         if (!$controller) {
-            list($bundle, $controller) = explode(":", $this->request->attributes->get('_controller'));
-        } else if (!$module) {
-            list($bundle, $devnull) = explode(":", $this->request->attributes->get('_controller'));
+            $controller = $this->_request->getControllerName();
+        }
+        if (!$module) {
+            $module = $this->_request->getModuleName();
         }
 
-        $controller = $module.":".$controller.":".$action;
+        $nameParser = $this->container->get('whitewashing.zend.mvc1compat.nameparser');
+        $controller = $nameParser->formatModule($module)."Bundle:".$nameParser->formatController($controller).":".$action;
         return $this->container->get('http_kernel')->forward($controller, array(), $params);
     }
 

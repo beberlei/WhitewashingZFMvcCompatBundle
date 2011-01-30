@@ -208,6 +208,8 @@ class ZendRequest
         $paramSources = $this->getParamSources();
         if (isset($this->_params[$key])) {
             return $this->_params[$key];
+        } else if ($this->request->attributes->has($key)) {
+            return $this->request->attributes->get($key);
         } elseif (in_array('_GET', $paramSources) && $this->request->query->has($key)) {
             return $this->request->query->get($key);
         } elseif (in_array('_POST', $paramSources) && $this->request->request->has($key)) {

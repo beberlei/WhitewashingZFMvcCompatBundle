@@ -25,11 +25,11 @@ class HelperBroker
         // TODO: Convert to using tags!
         // TODO: Remember helpers should be scope=request
         $helpers = array(
-            //'whitewashing.zend.mvc1compat.actionhelper.redirector',
+            'whitewashing.zend.mvc1compat.actionhelper.redirector',
             'whitewashing.zend.mvc1compat.actionhelper.url',
+            'whitewashing.zend.mvc1compat.actionhelper.contextswitch',
             //'whitewashing.zend.mvc1compat.actionhelper.json',
             //'whitewashing.zend.mvc1compat.actionhelper.flashmessenger',
-            'whitewashing.zend.mvc1compat.actionhelper.contextswitch',
         );
         foreach ($helpers AS $helper) {
             $helper = $container->get($helper);

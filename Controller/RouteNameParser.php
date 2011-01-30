@@ -24,6 +24,8 @@ class RouteNameParser
      */
     private $kernel;
 
+    private $moduleCache = array();
+
     public function __construct(KernelInterface $kernel)
     {
         $this->kernel = $kernel;
@@ -36,24 +38,57 @@ class RouteNameParser
         }
 
         // skip controllers as services
-        if (strpos($compiledControllerName, "::") === false) {
+        if (strpos($compiledControllerName, ".") !== false) {
             return array();
         }
 
-        $details = array();
-        list($controllerName, $actionName) = explode("::", $compiledControllerName);
-        $details['action'] = str_replace("Action", "", $actionName);
-        $controllerRefl = new \ReflectionClass($controllerName);
-        $details['controller'] = str_replace("Controller", "", $controllerRefl->getShortName());
-        $controllerNamespace = $controllerRefl->getNamespaceName();
+        if (substr_count($compiledControllerName, "::") == 1) {
+            $details = array();
+            list($controllerName, $actionName) = explode("::", $compiledControllerName);
+            $details['action'] = str_replace("Action", "", $actionName);
+            $controllerRefl = new \ReflectionClass($controllerName);
+            $details['controller'] = str_replace("Controller", "", $controllerRefl->getShortName());
+            $controllerNamespace = $controllerRefl->getNamespaceName();
 
-        foreach ($this->kernel->getBundles() AS $bundle) {
-            if (strpos($controllerNamespace, $bundle->getNamespace()) === 0) {
-                $details['module'] = str_replace("Bundle", "", $bundle->getName());
-                break;
+            foreach ($this->kernel->getBundles() AS $bundle) {
+                if (strpos($controllerNamespace, $bundle->getNamespace()) === 0) {
+                    $details['module'] = str_replace("Bundle", "", $bundle->getName());
+                    break;
+                }
             }
+        } else {
+            list($module, $controller, $action) = explode(":", $compiledControllerName);
+            $details['action'] = $action;
+            $details['controller'] = $controller;
+            $details['module'] = str_replace("Bundle", "", $module);
         }
 
         return $this->cache[$compiledControllerName] = $details;
+    }
+
+    /**
+     * Get correct casing of the module which is based on the bundle.
+     *
+     * @param  string $module
+     * @return string
+     */
+    public function formatModule($module)
+    {
+        $module = strtolower($module);
+        if (isset($this->moduleCache[$module])) {
+            return $this->moduleCache[$module];
+        }
+
+        foreach ($this->kernel->getBundles() AS $bundle) {
+            if ($module."bundle" == strtolower($bundle->getName())) {
+                return $this->moduleCache[$module] = str_replace("Bundle", "", $bundle->getName());
+            }
+        }
+        throw new \RuntimeException("Couldnt find a matching bundle for the module $module");
+    }
+
+    public function formatController($controller)
+    {
+        return ucfirst($controller);
     }
 }
