@@ -9,8 +9,9 @@ Simplifies moving your Zend 1.x MVC apps to Symfony 2 if you follow the way I in
 * Has a base controller that mimics Zend_Controller_Action functionality
 * Uses Zend_View as template engine and just replaces certain view helpers with the Symfony2 functionality.
 * Ports most of the common action helpers or implements proxies that implement Symfony2 functionality.
+* Adds a catch-all route mechanism for selected bundles.
 
-### What it cannot do (yet! (Waiting for your pull requests))
+### What it cannot do yet (Waiting for your pull requests)
 
 * Support for custom Zend_View helpers (high priority)
 * Expose Symfony View Globals such as the User through Zend_View
