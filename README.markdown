@@ -62,6 +62,10 @@ should become:
 
 4. Move your layout into $BundleRoot."/Resources/views/layout.html.phtml"
 
+5. View Layer: Replace the scriptname in calls to $this->partial() and $this->partialLoop() with the symfony resources, for example:
+
+    <?php echo $this->partial("HelloBundle:Test:partial.html.phtml", array("name" => "Someone else!")); ?>
+
 ## Semantic differences
 
 ### FrontController

@@ -31,20 +31,20 @@ class RouteNameParser
         $this->kernel = $kernel;
     }
 
-    public function parse($compiledControllerName)
+    public function parse($symfonyControllerName)
     {
-        if (isset($this->cache[$compiledControllerName])) {
-            return $this->cache[$compiledControllerName];
+        if (isset($this->cache[$symfonyControllerName])) {
+            return $this->cache[$symfonyControllerName];
         }
 
         // skip controllers as services
-        if (strpos($compiledControllerName, ".") !== false) {
+        if (strpos($symfonyControllerName, ".") !== false) {
             return array();
         }
 
-        if (substr_count($compiledControllerName, "::") == 1) {
+        if (substr_count($symfonyControllerName, "::") == 1) {
             $details = array();
-            list($controllerName, $actionName) = explode("::", $compiledControllerName);
+            list($controllerName, $actionName) = explode("::", $symfonyControllerName);
             $details['action'] = str_replace("Action", "", $actionName);
             $controllerRefl = new \ReflectionClass($controllerName);
             $details['controller'] = str_replace("Controller", "", $controllerRefl->getShortName());
@@ -57,13 +57,13 @@ class RouteNameParser
                 }
             }
         } else {
-            list($module, $controller, $action) = explode(":", $compiledControllerName);
+            list($module, $controller, $action) = explode(":", $symfonyControllerName);
             $details['action'] = $action;
             $details['controller'] = $controller;
             $details['module'] = str_replace("Bundle", "", $module);
         }
 
-        return $this->cache[$compiledControllerName] = $details;
+        return $this->cache[$symfonyControllerName] = $details;
     }
 
     /**

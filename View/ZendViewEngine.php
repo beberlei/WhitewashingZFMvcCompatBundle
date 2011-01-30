@@ -65,7 +65,8 @@ class ZendViewEngine implements EngineInterface
         $this->locator = $locator;
         $this->container = $container;
         $this->parser = $parser;
-        $this->view = new \Zend_View();
+        // TODO: make a service out of it?
+        $this->view = new View1($container, $container->get('whitewashing.zend.mvc1compat.nameparser'));
         // Zend View is not able to handle absolute paths except with this little trick
         $this->view->setScriptPath('');
     }
@@ -83,9 +84,9 @@ class ZendViewEngine implements EngineInterface
     public function render($name, array $parameters = array())
     {
         $templateName = $this->load($name);
-        $this->view->clearVars();
-        $this->view->assign($parameters);
-        return $this->view->render($templateName);
+        $view = clone $this->view;
+        $view->assign($parameters);
+        return $view->render($templateName);
     }
 
     /**
