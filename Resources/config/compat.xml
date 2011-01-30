@@ -22,10 +22,16 @@
             <argument>%whitewashing.zend.mvc1compat.catchall_bundles%</argument>
         </service>
 
+        <service id="whitewashing.zend.mvc1compat.view" class="Whitewashing\Zend\Mvc1CompatBundle\View\View1">
+            <argument type="service" id="service_container" />
+            <argument type="service" id="whitewashing.zend.mvc1compat.nameparser" />
+        </service>
+
         <service id="templating.engine.phtml" class="%templating.engine.zend.class%" public="false">
             <argument type="service" id="templating.locator" />
             <argument type="service" id="service_container" />
             <argument type="service" id="templating.name_parser" />
+            <argument type="service" id="whitewashing.zend.mvc1compat.view" />
         </service>
 
         <service id="whitewashing.zend.mvc1compat.nameparser" class="Whitewashing\Zend\Mvc1CompatBundle\Controller\RouteNameParser">

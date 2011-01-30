@@ -18,6 +18,7 @@ Simplifies moving your Zend 1.x MVC apps to Symfony 2 if you follow the way I in
 * Convert ZF routing config arrays to symfony2 ones
 * All the inflection madness with dashes, lowercase, uppercase whatnot routing to controller/action naming.
 * Context handling: The ContextSwitch and AjaxContext helpers are not ported yet.
+* Allow to implement the Zend Controllers as services.
 
 ### What it will never do
 
@@ -56,11 +57,13 @@ Each Zend Framework module will need to be ported to a Symfony2 Bundle.
 This can easily create clashes if you want to use a blog bundle built for Symfony in the future, but using this semantics you don't need to fix all your "_redirect", "_forward"
 and redirector helper calls. If you do want to use a another bundle name then make sure that whenever you specify $module in the Zend API you need that to be $module . "Bundle".
 
-2. Move all controllers into the $BundleRoot."/Controller/" directory and namespace the classes according to PR-0. src/Appliction/BlogBundle/Controller/PostController.php
+2. Move all controllers into the $BundleRoot."/Controller/" directory and namespace the classes according to PSR-0. src/Appliction/BlogBundle/Controller/PostController.php
 should become:
 
     namespace Application\BlogBundle\Controller;
-    class PostController
+    use Whitewashing\Zend\Mvc1CompatBundle\Controller\ZendController;
+
+    class PostController extends ZendController
     {
     }
 
@@ -74,7 +77,7 @@ should become:
 
 6. Routing
 
-You have to convert all your hand-crated routes to Symfony routes, place them in a $BundleRoot."/Resources/routing.yml" and import
+You have to convert all your Zend routes to Symfony routes, place them in a $BundleRoot."/Resources/routing.yml" and import
 them in your app/config/routing.yml. Additionally Symfony has no "catch-all" routes by default, so you have to make use
 of the catch all mechanism defined by the compat bundle:
 

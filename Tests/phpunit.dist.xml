@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="TestInit.php">
+    <php>
+        <var name="SYMFONY2_SRC" value="" />
+        <var name="ZF1_LIB" value="" />
+    </php>
+</phpunit>

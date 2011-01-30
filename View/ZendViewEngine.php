@@ -59,14 +59,18 @@ class ZendViewEngine implements EngineInterface
      */
     private $cache = array();
 
-    
-    public function __construct(TemplateLocatorInterface $locator, ContainerInterface $container, TemplateNameParserInterface $parser)
+    /**
+     * @param TemplateLocatorInterface $locator
+     * @param ContainerInterface $container
+     * @param TemplateNameParserInterface $parser
+     * @param Zend_View_Interface $zendView
+     */
+    public function __construct(TemplateLocatorInterface $locator, ContainerInterface $container, TemplateNameParserInterface $parser, $zendView)
     {
         $this->locator = $locator;
         $this->container = $container;
         $this->parser = $parser;
-        // TODO: make a service out of it?
-        $this->view = new View1($container, $container->get('whitewashing.zend.mvc1compat.nameparser'));
+        $this->view = $zendView;
         // Zend View is not able to handle absolute paths except with this little trick
         $this->view->setScriptPath('');
     }
@@ -127,7 +131,7 @@ class ZendViewEngine implements EngineInterface
         }
 
         if (false == $file = $this->locator->locate($name)) {
-            throw new \RuntimeException(sprintf('Unable to find template "%s".', json_ecnode($name)));
+            throw new \RuntimeException(sprintf('Unable to find template "%s".', json_encode($name)));
         }
 
         return $this->cache[$key] = $file;
