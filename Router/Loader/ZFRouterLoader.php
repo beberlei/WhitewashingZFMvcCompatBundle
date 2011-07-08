@@ -37,11 +37,8 @@ class ZFRouterLoader extends FileLoader
             $data = $data['routes'];
         }
 
-        var_dump($data);
-
         $collection = new RouteCollection;
         foreach ($data AS $routeName => $config) {
-            var_dump($config);
             if (isset($config['type']) && $config['type'] == "Zend_Controller_Router_Route_Regex") {
                 throw new \InvalidArgumentException("Not supported");
             }
