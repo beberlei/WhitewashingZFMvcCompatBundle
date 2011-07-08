@@ -1,8 +1,8 @@
 <?php
 
-namespace Whitewashing\Zend\Mvc1CompatBundle\Controller\Helpers;
+namespace Whitewashing\ZFMvcCompatBundle\Controller\Helpers;
 
-use Whitewashing\Zend\Mvc1CompatBundle\Controller\ZendController;
+use Whitewashing\ZFMvcCompatBundle\Controller\ZendController;
 
 /**
  * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)

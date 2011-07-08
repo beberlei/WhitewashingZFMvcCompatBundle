@@ -1,6 +1,6 @@
 <?php
 /**
- * Whitewashing ZendMvc1CompatBundle
+ * Whitewashing ZFMvcCompatBundle
  *
  * LICENSE
  *
@@ -11,9 +11,9 @@
  * to kontakt@beberlei.de so I can send you a copy immediately.
  */
 
-namespace Whitewashing\Zend\Mvc1CompatBundle\Controller;
+namespace Whitewashing\ZFMvcCompatBundle\Controller;
 
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Controller\Response;
 
 class ZendResponse
 {

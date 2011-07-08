@@ -1,6 +1,6 @@
 <?php
 
-namespace Whitewashing\Zend\Mvc1CompatBundle\Tests\View;
+namespace Whitewashing\ZFMvcCompatBundle\Tests\View;
 
 use Whitewashing\Zend\Mvc1CompatBundle\View\ZendViewEngine;
 

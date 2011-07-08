@@ -27,7 +27,7 @@ $files = array(
     "../View/ParameterBag.php",
     "../View/View1.php",
     "../View/ZendViewEngine.php",
-    "../WhitewashingZendMvc1CompatBundle.php",
+    "../WhitewashingZFMvcCompatBundle.php",
     "../DependencyInjection/Mvc1CompatExtension.php",
     "../Controller/ZendController.php",
     "../Controller/ZendRequest.php",

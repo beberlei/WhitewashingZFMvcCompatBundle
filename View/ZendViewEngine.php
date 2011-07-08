@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Whitewashing ZendMvc1CompatBundle
+ * Whitewashing ZFMvcCompatBundle
  *
  * LICENSE
  *
@@ -12,10 +12,10 @@
  * to kontakt@beberlei.de so I can send you a copy immediately.
  */
 
-namespace Whitewashing\Zend\Mvc1CompatBundle\View;
+namespace Whitewashing\ZFMvcCompatBundle\View;
 
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
-use Symfony\Bundle\FrameworkBundle\Templating\Loader\TemplateLocatorInterface;
+use Symfony\Component\Config\FileLocatorInterface;
 use Symfony\Component\Templating\TemplateNameParserInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -65,7 +65,7 @@ class ZendViewEngine implements EngineInterface
      * @param TemplateNameParserInterface $parser
      * @param Zend_View_Interface $zendView
      */
-    public function __construct(TemplateLocatorInterface $locator, ContainerInterface $container, TemplateNameParserInterface $parser, $zendView)
+    public function __construct(FileLocatorInterface $locator, ContainerInterface $container, TemplateNameParserInterface $parser, $zendView)
     {
         $this->locator = $locator;
         $this->container = $container;
@@ -116,7 +116,7 @@ class ZendViewEngine implements EngineInterface
     public function supports($name)
     {
         $template = $this->parser->parse($name);
-        return 'phtml' === $template['engine'];
+        return $template && 'phtml' === $template->get('engine');
     }
 
     protected function findTemplate($name)

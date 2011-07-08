@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Whitewashing ZendMvc1CompatBundle
+ * Whitewashing ZFMvcCompatBundle
  *
  * LICENSE
  *
@@ -12,50 +12,49 @@
  * to kontakt@beberlei.de so I can send you a copy immediately.
  */
 
-namespace Whitewashing\Zend\Mvc1CompatBundle\DependencyInjection;
+namespace Whitewashing\ZFMvcCompatBundle\DependencyInjection;
 
-use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\Resource\FileResource;
+use Symfony\Component\HttpKernel\DependencyInjection\Extension;
+use Symfony\Component\Config\FileLocator;
 
-class Mvc1CompatExtension extends Extension
+class WhitewashingZFMvcCompatExtension extends Extension
 {
-    public function compatLoad(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container)
     {
-        $loader = new XmlFileLoader($container, __DIR__.'/../Resources/config');
+        $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('compat.xml');
 
         foreach ($configs AS $config) {
             if (isset($config['default_layout_resource'])) {
                 $container->setParameter(
-                    'whitewashing.zend.mvc1compat.default_layout_resource',
+                    'whitewashing.zfmvccompat.default_layout_resource',
                     $config['default_layout_resource']
                 );
             }
             if (isset($config['catchall_bundles'])) {
                 $container->setParameter(
-                    'whitewashing.zend.mvc1compat.catchall_bundles',
+                    'whitewashing.zfmvccompat.catchall_bundles',
                     $config['catchall_bundles']
                 );
+            }
+            if (isset($config['db_conn'])) {
+                $def = new Definition('Zend_Db_Adapter_Abstract');
+                $def->setFactoryClass('Zend_Db');
+                $def->setFactoryMethod('factory');
+                $def->setArguments(array($config['db_conn']['adapter'], $config['db_conn']['params']));
+
+                $container->setDefinition('whitewashing.zfmvcompat.db', $def);
             }
         }
     }
 
     public function getAlias()
     {
-        return 'zendmvc1';
-    }
-
-    public function getNamespace()
-    {
-        return 'http://www.whitewashing.de/symfony/schema/zend/mvc1compat.xsd';
-    }
-
-    public function getXsdValidationBasePath()
-    {
-        return false;
+        return 'whitewashing_zf_mvc_compat';
     }
 }

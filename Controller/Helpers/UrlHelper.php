@@ -1,6 +1,6 @@
 <?php
 /**
- * Whitewashing ZendMvc1CompatBundle
+ * Whitewashing ZFMvcCompatBundle
  *
  * LICENSE
  *
@@ -11,9 +11,9 @@
  * to kontakt@beberlei.de so I can send you a copy immediately.
  */
 
-namespace Whitewashing\Zend\Mvc1CompatBundle\Controller\Helpers;
+namespace Whitewashing\ZFMvcCompatBundle\Controller\Helpers;
 
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Controller\Request;
 use Symfony\Component\Routing\RouterInterface;
 
 class UrlHelper extends Helper
@@ -77,6 +77,10 @@ class UrlHelper extends Helper
 
     public function url($urlOptions = array(), $name = null, $absolute = false)
     {
+        if ($name === null) {
+            $name = $this->request->get('_route');
+        }
+
         return $this->router->generate($name, $urlOptions, $absolute);
     }
 

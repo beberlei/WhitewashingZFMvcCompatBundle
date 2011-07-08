@@ -33,20 +33,19 @@ Simplifies moving your Zend 1.x MVC apps to Symfony 2 if you follow the way I in
 
         return array(
             //..
-            new Whitewashing\Zend\Mvc1CompatBundle\WhitewashingZendMvc1CompatBundle(),
+            new Whitewashing\ZFMvcCompatBundle\WhitewashingZFMvcCompatBundle(),
         );
 
 2. Add the Whitewashing namespace to your autolod.php.
 
 3. Register Zend_View as template engine in your config.yml:
 
-        app.config:
-            templating:
-                engine: ["phtml"]
+        framework:
+            templating: { engines: ["twig", "phtml"] }
 
 4. Enable the Compat Bundle in config.yml:
 
-        zendmvc1.compat:
+        whitewashing_zf_mvc_compat:
             default_layout_resource: "MyBundle::layout.html.phtml"
 
 ## Usage
@@ -62,7 +61,7 @@ and redirector helper calls. If you do want to use a another bundle name then ma
 should become:
 
         namespace Application\BlogBundle\Controller;
-        use Whitewashing\Zend\Mvc1CompatBundle\Controller\ZendController;
+        use Whitewashing\ZFMvcCompatBundle\Controller\ZendController;
 
         class PostController extends ZendController
         {
@@ -86,7 +85,7 @@ You have to convert all your Zend routes to Symfony routes, place them in a $Bun
 them in your app/config/routing.yml. Additionally Symfony has no "catch-all" routes by default, so you have to make use
 of the catch all mechanism defined by the compat bundle:
 
-        zendmvc1.compat:
+        whitewashing_zf_mvc_compat:
             catchall_bundles: ["BlogBundle"]
 
 When this mechanism is enabled you can request:
@@ -96,7 +95,7 @@ When this mechanism is enabled you can request:
 7. Security and ACLs
 
 You probably implemented some kind of authentication, security and acl mechanism using controller plugins, Zend_Acl and
-Zend_Auth. Ditch that code and use the SecurityBundle for this.
+Zend_Auth. You have to use Zend_Acl inside a kernel event, preferably after routing took place to reimplement that logic.
 
 ## Semantic differences
 

@@ -11,10 +11,10 @@
  * to kontakt@beberlei.de so I can send you a copy immediately.
  */
 
-namespace Whitewashing\Zend\Mvc1CompatBundle\Controller\Helpers;
+namespace Whitewashing\ZFMvcCompatBundle\Controller\Helpers;
 
 use Symfony\Component\DependencyInjection\Container;
-use Whitewashing\Zend\Mvc1CompatBundle\Controller\ZendController;
+use Whitewashing\ZFMvcCompatBundle\Controller\ZendController;
 
 class HelperBroker
 {
@@ -25,11 +25,11 @@ class HelperBroker
         // TODO: Convert to using tags!
         // TODO: Remember helpers should be scope=request
         $helpers = array(
-            'whitewashing.zend.mvc1compat.actionhelper.redirector',
-            'whitewashing.zend.mvc1compat.actionhelper.url',
-            'whitewashing.zend.mvc1compat.actionhelper.contextswitch',
-            'whitewashing.zend.mvc1compat.actionhelper.layout',
-            'whitewashing.zend.mvc1compat.actionhelper.viewrenderer',
+            'whitewashing.zfmvccompat.actionhelper.redirector',
+            'whitewashing.zfmvccompat.actionhelper.url',
+            'whitewashing.zfmvccompat.actionhelper.contextswitch',
+            'whitewashing.zfmvccompat.actionhelper.layout',
+            'whitewashing.zfmvccompat.actionhelper.viewrenderer',
         );
         foreach ($helpers AS $helper) {
             $helper = $container->get($helper);

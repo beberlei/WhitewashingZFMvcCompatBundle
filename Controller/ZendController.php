@@ -11,12 +11,12 @@
  * to kontakt@beberlei.de so I can send you a copy immediately.
  */
 
-namespace Whitewashing\Zend\Mvc1CompatBundle\Controller;
+namespace Whitewashing\ZFMvcCompatBundle\Controller;
 
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Whitewashing\Zend\Mvc1CompatBundle\View\ParameterBag;
-use Whitewashing\Zend\Mvc1CompatBundle\Controller\Helpers\HelperBroker;
+use Whitewashing\ZFMvcCompatBundle\View\ParameterBag;
+use Whitewashing\ZFMvcCompatBundle\Controller\Helpers\HelperBroker;
 
 abstract class ZendController implements ContainerAwareInterface
 {
@@ -46,7 +46,7 @@ abstract class ZendController implements ContainerAwareInterface
         $this->container = $container;
         $this->request = $container->get('request');
         $this->request->attributes->set('zend_compat_controller', $this);
-        $this->_request = $this->container->get('whitewashing.zend.mvc1compat.controller.request');
+        $this->_request = $this->container->get('whitewashing.zfmvccompat.controller.request');
         $this->_response = new ZendResponse();
         $this->view = new ParameterBag();
         $this->_helper = new HelperBroker($this->container, $this);
@@ -147,7 +147,7 @@ abstract class ZendController implements ContainerAwareInterface
             $module = $this->_request->getModuleName();
         }
 
-        $nameParser = $this->container->get('whitewashing.zend.mvc1compat.nameparser');
+        $nameParser = $this->container->get('whitewashing.zfmvccompat.nameparser');
         $controller = $nameParser->formatModule($module)."Bundle:".$nameParser->formatController($controller).":".$action;
         return $this->container->get('http_kernel')->forward($controller, array(), $params);
     }

@@ -1,6 +1,6 @@
 <?php
 /*
- * Whitewashing ZendMvc1CompatBundle
+ * Whitewashing ZFMvcCompatBundle
  *
  * LICENSE
  *
@@ -11,9 +11,9 @@
  * to kontakt@beberlei.de so I can send you a copy immediately.
  */
 
-namespace Whitewashing\Zend\Mvc1CompatBundle\Controller;
+namespace Whitewashing\ZFMvcCompatBundle\Controller;
 
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 
 class CatchAllRequestListener
 {
@@ -30,9 +30,9 @@ class CatchAllRequestListener
         $this->enabledBundles = $enabledBundles;
     }
 
-    public function resolve(Event $event)
+    public function resolve(GetResponseEvent $event)
     {
-        $request = $event->get('request');
+        $request = $event->getRequest();
 
         if ($request->attributes->has('_controller')) {
             return;

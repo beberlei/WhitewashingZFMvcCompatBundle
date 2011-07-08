@@ -1,6 +1,6 @@
 <?php
 /**
- * Whitewashing ZendMvc1CompatBundle
+ * Whitewashing ZFMvcCompatBundle
  *
  * LICENSE
  *
@@ -11,11 +11,13 @@
  * to kontakt@beberlei.de so I can send you a copy immediately.
  */
 
-namespace Whitewashing\Zend\Mvc1CompatBundle\View;
+namespace Whitewashing\ZFMvcCompatBundle\View;
 
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\HttpKernel\KernelInterface;
-use Whitewashing\Zend\Mvc1CompatBundle\Controller\ZendController;
+use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
+use Symfony\Component\HttpFoundation\Response;
+use Whitewashing\ZFMvcCompatBundle\Controller\ZendController;
 
 class CoreViewListener
 {
@@ -25,30 +27,32 @@ class CoreViewListener
     private $templating;
 
     /**
-     * @var Symfony\Component\HttpKernel\KernelInterface
+     *
+     * @var Whitewashing\ZFMvcCompatBundle\View\View1
      */
-    private $kernel;
+    private $zendView;
 
-    public function __construct($templating, KernelInterface $kernel)
+    public function __construct($templating, $zendView)
     {
         $this->templating = $templating;
-        $this->kernel = $kernel;
+        $this->zendView = $zendView;
     }
 
-    public function filterResponse(Event $event, $response)
+    public function filterResponse(GetResponseForControllerResultEvent  $event)
     {
         /* @var $request \Symfony\Component\HttpFoundation\Request */
-        $request = $event->get('request');
-        if ($request->attributes->has('zend_compat_controller') && !$response) {
+        $request = $event->getRequest();
+        
+
+        if ($request->attributes->has('zend_compat_controller') && !$event->hasResponse()) {
             /* @var $zendController ZendController */
             $zendController = $request->attributes->get('zend_compat_controller');
             $zendController->postDispatch();
-            
             /* @var $zendRequest ZendRequest */
             $zendRequest = $zendController->getRequest();
 
             /* @var $response Symfony\Component\HttpFoundation\Response */
-            $response = $this->kernel->getContainer()->get('response');
+            $response = new Response();
 
             /* @var $zendResponse ZendResponse */
             $zendResponse = $zendController->getResponse();
@@ -63,14 +67,22 @@ class CoreViewListener
                     $zendRequest->getActionName(),
                     "html", "phtml"
                 );
-                $content = $this->templating->render($viewName, $zendController->view->allVars());
+
+                $vars = $zendController->view->allVars();
+                foreach ($vars AS $k => $v) {
+                    if ($v instanceof \Zend_Form) {
+                        $v->setView($this->zendView);
+                    }
+                }
+
+                $content = $this->templating->render($viewName, $vars);
 
                 if ($zendController->getHelper('layout')->isEnabled()) {
                     $content = $this->templating->render($zendController->getHelper('layout')->getLayout(), array('content' => $content));
                 }
                 $response->setContent($content);
             }
+            $event->setResponse($response);
         }
-        return $response;
     }
 }

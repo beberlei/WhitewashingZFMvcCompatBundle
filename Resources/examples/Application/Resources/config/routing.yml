@@ -1,0 +1,7 @@
+zfmvccompat_guestbook_homepage:
+  pattern: /zfguestbook
+  defaults: { _controller: "ApplicationBundle:Guestbook:index" }
+
+zfmvccompat_guestbook_sign:
+  pattern: /zfguestbook/sign
+  defaults: { _controller: "ApplicationBundle:Guestbook:sign" }

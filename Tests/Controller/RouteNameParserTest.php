@@ -1,6 +1,6 @@
 <?php
 /*
- * Whitewashing ZendMvc1CompatBundle
+ * Whitewashing ZFMvcCompatBundle
  *
  * LICENSE
  *
@@ -11,7 +11,7 @@
  * to kontakt@beberlei.de so I can send you a copy immediately.
  */
 
-namespace Whitewashing\Zend\Mvc1CompatBundle\Tests\Controller;
+namespace Whitewashing\ZFMvcCompatBundle\Tests\Controller;
 
 use Whitewashing\Zend\Mvc1CompatBundle\Controller\RouteNameParser;
 

@@ -1,6 +1,6 @@
 <?php
 /*
- * Whitewashing ZendMvc1CompatBundle
+ * Whitewashing ZFMvcCompatBundle
  *
  * LICENSE
  *
@@ -11,9 +11,9 @@
  * to kontakt@beberlei.de so I can send you a copy immediately.
  */
 
-namespace Whitewashing\Zend\Mvc1CompatBundle\Controller\Helpers;
+namespace Whitewashing\ZFMvcCompatBundle\Controller\Helpers;
 
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class Redirector extends Helper
 {
@@ -32,10 +32,9 @@ class Redirector extends Helper
      */
     protected $response;
 
-    public function __construct(UrlHelper $urlHelper, Response $response)
+    public function __construct(UrlHelper $urlHelper)
     {
         $this->urlHelper = $urlHelper;
-        $this->response = $response;
     }
 
     public function getName()
@@ -67,20 +66,20 @@ class Redirector extends Helper
 
     public function setGotoSimple($action, $controller = null, $module = null, array $params = array())
     {
-        $this->response->setRedirect($this->urlHelper->direct($action, $controller, $module, $params));
+        $this->response = new RedirectResponse($this->urlHelper->direct($action, $controller, $module, $params));
     }
 
     public function setGotoRoute(array $urlOptions = array(), $name = null, $absolute = true)
     {
-        $this->response->setRedirect($this->urlHelper->url($urlOptions, $name, $absolute || $this->useAbsoluteUri));
+        $this->response = new RedirectResponse($this->urlHelper->url($urlOptions, $name, $absolute || $this->useAbsoluteUri));
     }
 
     public function setGotoUrl($url, array $options = array())
     {
-        if (isset($options['code'])) {
-            $this->response->setStatusCode($options['code']);
+        if (!isset($options['code'])) {
+            $options['code'] = null;
         }
-        $this->response->setRedirect($url);
+        $this->response = new RedirectResponse($url, $options['code']);
     }
 
     public function gotoSimple($action, $controller = null, $module = null, array $params = array())

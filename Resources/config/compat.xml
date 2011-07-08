@@ -1,69 +1,69 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<container xmlns="http://www.symfony-project.org/schema/dic/services"
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.symfony-project.org/schema/dic/services http://www.symfony-project.org/schema/dic/services/services-1.0.xsd">
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
-        <parameter key="templating.engine.zend.class">Whitewashing\Zend\Mvc1CompatBundle\View\ZendViewEngine</parameter>
-        <parameter key="whitewashing.zend.mvc1compat.default_layout_resource">WhitewashingZendMvc1CompatBundle::layout.html.phtml</parameter>
-        <parameter key="whitewashing.zend.mvc1compat.catchall_bundles" type="collection" />
+        <parameter key="templating.engine.zend.class">Whitewashing\ZFMvcCompatBundle\View\ZendViewEngine</parameter>
+        <parameter key="whitewashing.zfmvccompat.default_layout_resource">WhitewashingZFMvcCompatBundle::layout.html.phtml</parameter>
+        <parameter key="whitewashing.zfmvccompat.catchall_bundles" type="collection" />
     </parameters>
 
     <services>
-        <service id="whitewashing.zend.mvc1compat.core.view.listener" class="Whitewashing\Zend\Mvc1CompatBundle\View\CoreViewListener">
+        <service id="whitewashing.zfmvccompat.kernel_listener.view" class="Whitewashing\ZFMvcCompatBundle\View\CoreViewListener">
             <tag name="kernel.listener" event="core.view" method="filterResponse" />
             <argument id="templating" type="service" />
-            <argument id="kernel" type="service" />
+            <argument id="whitewashing.zfmvccompat.view" type="service" />
         </service>
 
-        <service id="whitewashing.zend.mvc1compat.core.request.listener" class="Whitewashing\Zend\Mvc1CompatBundle\Controller\CatchAllRequestListener">
+        <service id="whitewashing.zfmvccompat.kernel_listener.request" class="Whitewashing\ZFMvcCompatBundle\Controller\CatchAllRequestListener">
             <tag name="kernel.listener" event="core.request" method="resolve" />
-            <argument type="service" id="whitewashing.zend.mvc1compat.nameparser" />
-            <argument>%whitewashing.zend.mvc1compat.catchall_bundles%</argument>
+            <argument type="service" id="whitewashing.zfmvccompat.nameparser" />
+            <argument>%whitewashing.zfmvccompat.catchall_bundles%</argument>
         </service>
 
-        <service id="whitewashing.zend.mvc1compat.view" class="Whitewashing\Zend\Mvc1CompatBundle\View\View1">
+        <service id="whitewashing.zfmvccompat.view" class="Whitewashing\ZFMvcCompatBundle\View\View1">
             <argument type="service" id="service_container" />
-            <argument type="service" id="whitewashing.zend.mvc1compat.nameparser" />
+            <argument type="service" id="whitewashing.zfmvccompat.nameparser" />
         </service>
 
         <service id="templating.engine.phtml" class="%templating.engine.zend.class%" public="false">
             <argument type="service" id="templating.locator" />
             <argument type="service" id="service_container" />
             <argument type="service" id="templating.name_parser" />
-            <argument type="service" id="whitewashing.zend.mvc1compat.view" />
+            <argument type="service" id="whitewashing.zfmvccompat.view" />
         </service>
 
-        <service id="whitewashing.zend.mvc1compat.nameparser" class="Whitewashing\Zend\Mvc1CompatBundle\Controller\RouteNameParser">
+        <service id="whitewashing.zfmvccompat.nameparser" class="Whitewashing\ZFMvcCompatBundle\Controller\RouteNameParser">
             <argument type="service" id="kernel" />
         </service>
 
-        <service id="whitewashing.zend.mvc1compat.controller.request" class="Whitewashing\Zend\Mvc1CompatBundle\Controller\ZendRequest" scope="request">
+        <service id="whitewashing.zfmvccompat.controller.request" class="Whitewashing\ZFMvcCompatBundle\Controller\ZendRequest" scope="request">
             <argument type="service" id="request" />
-            <argument type="service" id="whitewashing.zend.mvc1compat.nameparser" />
+            <argument type="service" id="whitewashing.zfmvccompat.nameparser" />
         </service>
 
-        <service id="whitewashing.zend.mvc1compat.actionhelper.contextswitch" class="Whitewashing\Zend\Mvc1CompatBundle\Controller\Helpers\ContextSwitch">
+        <service id="whitewashing.zfmvccompat.actionhelper.contextswitch" class="Whitewashing\ZFMvcCompatBundle\Controller\Helpers\ContextSwitch">
             
         </service>
 
-        <service id="whitewashing.zend.mvc1compat.actionhelper.url" class="Whitewashing\Zend\Mvc1CompatBundle\Controller\Helpers\UrlHelper" scope="request">
+        <service id="whitewashing.zfmvccompat.actionhelper.url" class="Whitewashing\ZFMvcCompatBundle\Controller\Helpers\UrlHelper" scope="request">
             <argument type="service" id="router" />
-            <argument type="service" id="whitewashing.zend.mvc1compat.nameparser" />
+            <argument type="service" id="whitewashing.zfmvccompat.nameparser" />
             <argument type="service" id="request" />
         </service>
 
-        <service id="whitewashing.zend.mvc1compat.actionhelper.redirector" class="Whitewashing\Zend\Mvc1CompatBundle\Controller\Helpers\Redirector" scope="request">
-            <argument type="service" id="whitewashing.zend.mvc1compat.actionhelper.url" />
-            <argument type="service" id="response" strict="false" />
+        <service id="whitewashing.zfmvccompat.actionhelper.redirector" class="Whitewashing\ZFMvcCompatBundle\Controller\Helpers\Redirector" scope="request">
+            <argument type="service" id="whitewashing.zfmvccompat.actionhelper.url" />
         </service>
 
-        <service id="whitewashing.zend.mvc1compat.actionhelper.layout" class="Whitewashing\Zend\Mvc1CompatBundle\Controller\Helpers\Layout" scope="request">
-            <argument>%whitewashing.zend.mvc1compat.default_layout_resource%</argument>
+        <service id="whitewashing.zfmvccompat.actionhelper.layout" class="Whitewashing\ZFMvcCompatBundle\Controller\Helpers\Layout" scope="request">
+            <argument>%whitewashing.zfmvccompat.default_layout_resource%</argument>
         </service>
 
-        <service id="whitewashing.zend.mvc1compat.actionhelper.viewrenderer" class="Whitewashing\Zend\Mvc1CompatBundle\Controller\Helpers\ViewRenderer" scope="request">
-            <argument>%whitewashing.zend.mvc1compat.default_layout_resource%</argument>
+        <service id="whitewashing.zfmvccompat.actionhelper.viewrenderer" class="Whitewashing\ZFMvcCompatBundle\Controller\Helpers\ViewRenderer" scope="request">
+            <argument>%whitewashing.zfmvccompat.default_layout_resource%</argument>
         </service>
     </services>
 </container>

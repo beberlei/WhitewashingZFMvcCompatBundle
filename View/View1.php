@@ -11,10 +11,10 @@
  * to kontakt@beberlei.de so I can send you a copy immediately.
  */
 
-namespace Whitewashing\Zend\Mvc1CompatBundle\View;
+namespace Whitewashing\ZFMvcCompatBundle\View;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Whitewashing\Zend\Mvc1CompatBundle\Controller\RouteNameParser;
+use Whitewashing\ZFMvcCompatBundle\Controller\RouteNameParser;
 
 class View1 extends \Zend_View
 {
@@ -58,6 +58,6 @@ class View1 extends \Zend_View
 
     public function url(array $urlOptions = array(), $name = null, $absolute = false)
     {
-        return $this->container->get('whitewashing.zend.mvc1compat.actionhelper.url')->url($urlOptions, $name, $absolute);
+        return $this->container->get('whitewashing.zfmvccompat.actionhelper.url')->url($urlOptions, $name, $absolute);
     }
 }

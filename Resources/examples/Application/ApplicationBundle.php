@@ -1,6 +1,6 @@
 <?php
 /*
- * Whitewashing ZendMvc1CompatBundle
+ * Whitewashing ZFMvcCompatBundle
  *
  * LICENSE
  *
@@ -11,19 +11,11 @@
  * to kontakt@beberlei.de so I can send you a copy immediately.
  */
 
-namespace Whitewashing\Zend\Mvc1CompatBundle;
+namespace Application;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class WhitewashingZendMvc1CompatBundle extends Bundle
+class ApplicationBundle extends Bundle
 {
-    public function getNamespace()
-    {
-        return __NAMESPACE__;
-    }
-
-    public function getPath()
-    {
-        return strtr(__DIR__, '\\', '/');
-    }
+    
 }
