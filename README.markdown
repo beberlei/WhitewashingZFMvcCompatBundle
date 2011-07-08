@@ -15,17 +15,44 @@ Simplifies moving your Zend 1.x MVC apps to Symfony 2 if you follow the way I in
 
 * Support for custom Zend_View helpers (high priority)
 * Expose Symfony View Globals such as the User through Zend_View
-* Re-implement the Controller Plugin cycle, use Symfony internals to port your plugins.
+* Re-implement the Controller Plugin cycle (currently: use Symfony internals to port your plugins)
 * Convert ZF routing config arrays to symfony2 ones
-* All the inflection madness with dashes, lowercase, uppercase whatnot routing to controller/action naming.
+* All the inflection madness with dashes, lowercase, uppercase whatnot routing to controller/action naming. Currently only simple inflection is used.
 * Context handling: The ContextSwitch and AjaxContext helpers are not ported yet.
-* Allow to implement the Zend Controllers as services.
+* Have a console task to import a module from a ZF Project and do some work of the steps Installation automatically.
 
 ### What it will never do
 
 * Make Zend Application code reusable (Use the dependency injection container)
 * Handle calls to Zend_Controller_FrontController, you have to get rid of them.
-* Make the ActionStack Helper work. This concept is flawed and should be replaced with calls to $this->action() in the view, which replaces it with Symfony internal functionality that is super fast.
+* Make the ActionStack Helper work. This concept is flawed and should be replaced with calls to $this->action() in the view, which replaces it with Symfony internal functionality that is dispatching actions very fast.
+
+### Example
+
+In the ZFMvcCompatBundle\Resources\examples folder is an example bundle that implements the Guestbook tutorial as
+a Symfony bundle using the compat layer. You can use it by adding "Application\ApplicationBundle()" as bundle to the Kernel,
+configure the autoloader to use "Application" as namespace and "Application_" as directory. You can configure
+the compat bundle with:
+
+    whitewashing_zf_mvc_compat:
+      default_layout_resource: "ApplicationBundle::layout.html.phtml"
+      db_conn:
+        adapter: pdo_mysql
+        params:
+          host: localhost
+          username: root
+          password:
+          dbname: zfmvccompat
+
+The database schema is:
+
+    CREATE TABLE `guestbook` (
+     `id` int(11) NOT NULL AUTO_INCREMENT,
+     `email` varchar(32) NOT NULL DEFAULT 'noemail@test.com',
+     `comment` text,
+     `created` datetime NOT NULL,
+     PRIMARY KEY (`id`)
+    ) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=latin1
 
 ## Installation
 
@@ -66,6 +93,8 @@ should become:
         class PostController extends ZendController
         {
         }
+
+IMPORTANT: Since your Controllers are now inside a namespace you have to either "use" import all classes or prefix them with \.
 
 3. Move all your views into $BundleRoot."/Resources/views" and rename the "default" context html views into "viewName.html.phtml" instead of "viewName.phtml"
 
