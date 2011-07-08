@@ -16,7 +16,6 @@ Simplifies moving your Zend 1.x MVC apps to Symfony 2 if you follow the way I in
 * Support for custom Zend_View helpers (high priority)
 * Expose Symfony View Globals such as the User through Zend_View
 * Re-implement the Controller Plugin cycle (currently: use Symfony internals to port your plugins)
-* Convert ZF routing config arrays to symfony2 ones
 * All the inflection madness with dashes, lowercase, uppercase whatnot routing to controller/action naming. Currently only simple inflection is used.
 * Context handling: The ContextSwitch and AjaxContext helpers are not ported yet.
 * Have a console task to import a module from a ZF Project and do some work of the steps Installation automatically.
@@ -110,7 +109,15 @@ Different layout blocks are NOT supported. Use `$this->action()` for that.
 
 6. Routing
 
-You have to convert all your Zend routes to Symfony routes, place them in a $BundleRoot."/Resources/routing.yml" and import
+There is simple support for static and router routes in the compatibility layer through
+``Whitewashing\ZFMvcCompatBundle\Router\Loader\ZFRouterLoader``. If you just use them you can
+use xml, ini or php Zend_Config inputs by defining for example the Guestbook example:
+
+    guestbookzf:
+      type: zfmvc
+      resource: "@WhitewashingZFMvcCompatBundle/Resources/examples/Application/Resources/config/routing.ini"
+
+You should however convert all your Zend routes to Symfony routes, place them in a $BundleRoot."/Resources/routing.yml" and import
 them in your app/config/routing.yml. Additionally Symfony has no "catch-all" routes by default, so you have to make use
 of the catch all mechanism defined by the compat bundle:
 

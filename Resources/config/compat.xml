@@ -65,5 +65,10 @@
         <service id="whitewashing.zfmvccompat.actionhelper.viewrenderer" class="Whitewashing\ZFMvcCompatBundle\Controller\Helpers\ViewRenderer" scope="request">
             <argument>%whitewashing.zfmvccompat.default_layout_resource%</argument>
         </service>
+
+        <service id="whitewashing.zfmvccompat.routing.loader.zf" class="Whitewashing\ZFMvcCompatBundle\Router\Loader\ZFRouterLoader" public="false">
+            <tag name="routing.loader" />
+            <argument type="service" id="file_locator" />
+        </service>
     </services>
 </container>
