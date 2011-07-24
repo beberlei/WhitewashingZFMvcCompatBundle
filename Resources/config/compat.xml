@@ -12,13 +12,13 @@
 
     <services>
         <service id="whitewashing.zfmvccompat.kernel_listener.view" class="Whitewashing\ZFMvcCompatBundle\View\CoreViewListener">
-            <tag name="kernel.listener" event="core.view" method="filterResponse" />
+            <tag name="kernel.event_listener" event="kernel.view" method="filterResponse" />
             <argument id="templating" type="service" />
             <argument id="whitewashing.zfmvccompat.view" type="service" />
         </service>
 
         <service id="whitewashing.zfmvccompat.kernel_listener.request" class="Whitewashing\ZFMvcCompatBundle\Controller\CatchAllRequestListener">
-            <tag name="kernel.listener" event="core.request" method="resolve" />
+            <tag name="kernel.event_listener" event="kernel.request" method="resolve" />
             <argument type="service" id="whitewashing.zfmvccompat.nameparser" />
             <argument>%whitewashing.zfmvccompat.catchall_bundles%</argument>
         </service>
