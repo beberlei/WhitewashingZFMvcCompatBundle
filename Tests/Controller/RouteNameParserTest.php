@@ -13,7 +13,7 @@
 
 namespace Whitewashing\ZFMvcCompatBundle\Tests\Controller;
 
-use Whitewashing\Zend\Mvc1CompatBundle\Controller\RouteNameParser;
+use Whitewashing\ZFMvcCompatBundle\Controller\RouteNameParser;
 
 class RouteNameParserTest extends \PHPUnit_Framework_TestCase
 {
@@ -43,7 +43,7 @@ class RouteNameParserTest extends \PHPUnit_Framework_TestCase
         $bundle = $this->getMock('WhitewashingCompatCompiledBundleMock', array('getName', 'getNamespace'));
         $bundle->expects($this->at(0))
                ->method('getNamespace')
-               ->will($this->returnValue('Whitewashing\Zend\Mvc1CompatBundle'));
+               ->will($this->returnValue('Whitewashing\ZFMvcCompatBundle'));
         $bundle->expects($this->at(1))
                ->method('getName')
                ->will($this->returnValue('HelloBundle'));
@@ -54,13 +54,13 @@ class RouteNameParserTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(
             array("module" => "Hello", "controller" => "Test", "action" => "index"),
-            $this->parser->parse("Whitewashing\\Zend\\Mvc1CompatBundle\\Tests\\Controller\\TestController::indexAction")
+            $this->parser->parse("Whitewashing\\ZFMvcCompatBundle\\Tests\\Controller\\TestController::indexAction")
         );
 
         // cached?
         $this->assertEquals(
             array("module" => "Hello", "controller" => "Test", "action" => "index"),
-            $this->parser->parse("Whitewashing\\Zend\\Mvc1CompatBundle\\Tests\\Controller\\TestController::indexAction")
+            $this->parser->parse("Whitewashing\\ZFMvcCompatBundle\\Tests\\Controller\\TestController::indexAction")
         );
     }
 

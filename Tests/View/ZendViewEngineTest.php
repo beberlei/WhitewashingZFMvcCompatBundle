@@ -2,7 +2,7 @@
 
 namespace Whitewashing\ZFMvcCompatBundle\Tests\View;
 
-use Whitewashing\Zend\Mvc1CompatBundle\View\ZendViewEngine;
+use Whitewashing\ZFMvcCompatBundle\View\ZendViewEngine;
 
 class ZendViewEngineTest extends \PHPUnit_Framework_TestCase
 {
@@ -14,7 +14,7 @@ class ZendViewEngineTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->locator = $this->getMock('Symfony\Bundle\FrameworkBundle\Templating\Loader\TemplateLocatorInterface');
+        $this->locator = $this->getMock('Symfony\Component\Config\FileLocatorInterface');
         $this->container = $this->getMock('Symfony\Component\DependencyInjection\ContainerInterface');
         $this->nameParser = $this->getMock('Symfony\Component\Templating\TemplateNameParserInterface');
         $this->view = $this->getMock('Zend_View_Interface');
@@ -25,9 +25,14 @@ class ZendViewEngineTest extends \PHPUnit_Framework_TestCase
     {
         $templateResource = 'HelloBundle:test:index.html.phtml';
 
+        $templateReference = $this->getMock('Symfony\Component\Templating\TemplateReferenceInterface');
+        $templateReference->expects($this->once())->method('get')
+                          ->with($this->equalTo('engine'))
+                          ->will($this->returnValue('phtml'));
+
         $this->nameParser->expects($this->once())->method('parse')
                          ->with($this->equalTo($templateResource))
-                         ->will($this->returnValue(array('engine' => 'phtml')));
+                         ->will($this->returnValue($templateReference));
 
         $this->assertTrue($this->engine->supports($templateResource));
     }
