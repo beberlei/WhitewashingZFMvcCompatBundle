@@ -25,9 +25,14 @@ class ZendViewEngineTest extends \PHPUnit_Framework_TestCase
     {
         $templateResource = 'HelloBundle:test:index.html.phtml';
 
+        $templateReference = $this->getMock('Symfony\Component\Templating\TemplateReferenceInterface');
+        $templateReference->expects($this->once())->method('get')
+                          ->with($this->equalTo('engine'))
+                          ->will($this->returnValue('phtml'));
+
         $this->nameParser->expects($this->once())->method('parse')
                          ->with($this->equalTo($templateResource))
-                         ->will($this->returnValue(array('engine' => 'phtml')));
+                         ->will($this->returnValue($templateReference));
 
         $this->assertTrue($this->engine->supports($templateResource));
     }
