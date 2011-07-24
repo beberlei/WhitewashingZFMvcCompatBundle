@@ -72,6 +72,10 @@ class CoreViewListener
                 foreach ($vars AS $k => $v) {
                     if ($v instanceof \Zend_Form) {
                         $v->setView($this->zendView);
+
+                        foreach ($v->getElements() as $element) {
+                            $element->setView($this->zendView);
+                        }
                     }
                 }
 
