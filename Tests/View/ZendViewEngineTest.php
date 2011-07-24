@@ -2,7 +2,7 @@
 
 namespace Whitewashing\ZFMvcCompatBundle\Tests\View;
 
-use Whitewashing\Zend\Mvc1CompatBundle\View\ZendViewEngine;
+use Whitewashing\ZFMvcCompatBundle\View\ZendViewEngine;
 
 class ZendViewEngineTest extends \PHPUnit_Framework_TestCase
 {
@@ -14,7 +14,7 @@ class ZendViewEngineTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->locator = $this->getMock('Symfony\Bundle\FrameworkBundle\Templating\Loader\TemplateLocatorInterface');
+        $this->locator = $this->getMock('Symfony\Component\Config\FileLocatorInterface');
         $this->container = $this->getMock('Symfony\Component\DependencyInjection\ContainerInterface');
         $this->nameParser = $this->getMock('Symfony\Component\Templating\TemplateNameParserInterface');
         $this->view = $this->getMock('Zend_View_Interface');
