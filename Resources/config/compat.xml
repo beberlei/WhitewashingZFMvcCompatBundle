@@ -15,6 +15,7 @@
         <parameter key="whitewashing.zfmvccompat.nameparser.class">Whitewashing\ZFMvcCompatBundle\Controller\RouteNameParser</parameter>
         <parameter key="whitewashing.zfmvccompat.controller.request.class">Whitewashing\ZFMvcCompatBundle\Controller\ZendRequest</parameter>
         <parameter key="whitewashing.zfmvccompat.actionhelper.contextswitch.class">Whitewashing\ZFMvcCompatBundle\Controller\Helpers\ContextSwitch</parameter>
+        <parameter key="whitewashing.zfmvccompat.actionhelper.flashmessenger.class">Whitewashing\ZFMvcCompatBundle\Controller\Helpers\FlashMessenger</parameter>
         <parameter key="whitewashing.zfmvccompat.actionhelper.url.class">Whitewashing\ZFMvcCompatBundle\Controller\Helpers\UrlHelper</parameter>
         <parameter key="whitewashing.zfmvccompat.actionhelper.redirector.class">Whitewashing\ZFMvcCompatBundle\Controller\Helpers\Redirector</parameter>
         <parameter key="whitewashing.zfmvccompat.actionhelper.layout.class">Whitewashing\ZFMvcCompatBundle\Controller\Helpers\Layout</parameter>
@@ -58,6 +59,10 @@
 
         <service id="whitewashing.zfmvccompat.actionhelper.contextswitch" class="%whitewashing.zfmvccompat.actionhelper.contextswitch.class%">
             
+        </service>
+
+        <service id="whitewashing.zfmvccompat.actionhelper.flashmessenger" class="%whitewashing.zfmvccompat.actionhelper.flashmessenger.class%">
+
         </service>
 
         <service id="whitewashing.zfmvccompat.actionhelper.url" class="%whitewashing.zfmvccompat.actionhelper.url.class%" scope="request">
