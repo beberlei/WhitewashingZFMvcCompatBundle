@@ -23,7 +23,7 @@ class ViewRenderer extends Helper
         return 'viewrenderer';
     }
 
-    public function setNoRender($flag)
+    public function setNoRender($flag = true)
     {
         $this->noRender = (bool)$flag;
         return $this;
@@ -34,7 +34,7 @@ class ViewRenderer extends Helper
         return $this->noRender || self::$neverRender;
     }
 
-    public function setNeverRender($flag)
+    public function setNeverRender($flag = true)
     {
         self::$neverRender = (bool)$flag;
         return $this;
