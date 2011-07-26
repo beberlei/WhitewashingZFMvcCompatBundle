@@ -17,6 +17,7 @@ use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Whitewashing\ZFMvcCompatBundle\View\ParameterBag;
 use Whitewashing\ZFMvcCompatBundle\Controller\Helpers\HelperBroker;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 abstract class ZendController implements ContainerAwareInterface
 {
@@ -88,7 +89,7 @@ abstract class ZendController implements ContainerAwareInterface
 
     protected function _hasParam($name)
     {
-        return null !== $this->_request->getParam($paramName);
+        return null !== $this->_request->getParam($name);
     }
 
     protected function _getAllParams()
@@ -159,12 +160,10 @@ abstract class ZendController implements ContainerAwareInterface
      *
      * @param string $url
      * @param array $options Options to be used when redirecting
-     * @return void
+     * @return RedirectResponse The symfony redirect response
      */
     protected function _redirect($url, array $options = array())
     {
-        $response = $this->container->get('response');
-        $response->setRedirect($url);
-        return $response;
+        return new RedirectResponse($this->container->get('request')->getUriForPath($url));
     }
 }

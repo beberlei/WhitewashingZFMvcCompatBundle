@@ -104,7 +104,7 @@ class ZendResponse
 
     public function getBody()
     {
-        return $this->body;
+        return $this->content;
     }
 
     public function __call($method, $args)
