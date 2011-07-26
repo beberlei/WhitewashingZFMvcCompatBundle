@@ -25,6 +25,7 @@ class HelperBroker
         // TODO: Convert to using tags!
         // TODO: Remember helpers should be scope=request
         $helpers = array(
+            'whitewashing.zfmvccompat.actionhelper.flashmessenger',
             'whitewashing.zfmvccompat.actionhelper.redirector',
             'whitewashing.zfmvccompat.actionhelper.url',
             'whitewashing.zfmvccompat.actionhelper.contextswitch',
