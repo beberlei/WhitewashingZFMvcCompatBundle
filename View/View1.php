@@ -60,4 +60,21 @@ class View1 extends \Zend_View
     {
         return $this->container->get('whitewashing.zfmvccompat.actionhelper.url')->url($urlOptions, $name, $absolute);
     }
+
+    public function flashMessenger()
+    {
+        $flashMessenger = $this->container->get('whitewashing.zfmvccompat.actionhelper.flashmessenger');
+
+        //get messages from previous requests
+        $messages = $flashMessenger->getMessages();
+
+        //add any messages from this request
+        if ($flashMessenger->hasCurrentMessages()) {
+            $messages = array_merge($messages, $flashMessenger->getCurrentMessages());
+            //we don't need to display them twice.
+            $flashMessenger->clearCurrentMessages();
+        }
+
+        return $messages;
+    }
 }
