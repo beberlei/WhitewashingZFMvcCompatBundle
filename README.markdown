@@ -187,6 +187,7 @@ and the regular action helper stuff.
 * Redirector
 * ViewRenderer
 * Layout
+* FlashMessenger
 
 #### Url Action Helper
 
